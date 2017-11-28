@@ -29,7 +29,7 @@ class Application(tk.Frame):
         names = askopenfilenames(filetypes=[('xliff files', '.xliff')])
         for name in names:
             editor = xliff_tool.XliffEditor(name)
-            editor.clean_translation()
+            editor.better_clean()
         self.clean_label['text'] = 'Clean completed'
 
  
