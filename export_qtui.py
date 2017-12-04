@@ -11,10 +11,18 @@ from trans_export import *
 
 class Ui_ExportWindow(object):
     def __init__(self):
-        with DBWrapper() as dbconn:
-            self.accounts = dbconn.select_account()
-            self.account_map = {acc.name:acc.id for acc in \
-                    self.accounts}
+        try:
+            with DBWrapper() as dbconn:
+                self.accounts = dbconn.select_account()
+                self.account_map = {acc.name:acc.id for acc in \
+                        self.accounts}
+        except pymssql.Error as err:
+            msg = QtWidgets.QMessageBox()
+            msg.setIcon(QtWidgets.QMessageBox.Information)
+            msg.setText("Failed to connect Database! This Application"
+            " will quit.\r\n" + str(err))
+            sys.exit(msg.exec_())
+
     
     def setupUi(self, ExportWindow):
         ExportWindow.setObjectName("ExportWindow")
@@ -45,9 +53,15 @@ class Ui_ExportWindow(object):
         self.statusLabel = QtWidgets.QLabel(self.centralwidget)
         self.statusLabel.setGeometry(QtCore.QRect(130, 530, 300, 27))
         self.statusLabel.setObjectName("statusLabel")
+        self.langLabel = QtWidgets.QLabel(self.centralwidget)
+        self.langLabel.setGeometry(QtCore.QRect(30,100,221,22))
+        self.langLabel.setObjectName("langLabel")
         self.languageInput = QtWidgets.QPlainTextEdit(self.centralwidget)
         self.languageInput.setGeometry(QtCore.QRect(20, 140, 281, 301))
         self.languageInput.setObjectName("languageInput")
+        self.textLabel = QtWidgets.QLabel(self.centralwidget)
+        self.textLabel.setGeometry(QtCore.QRect(350,100,221,22))
+        self.textLabel.setObjectName("textLabel")
         self.textidInput = QtWidgets.QPlainTextEdit(self.centralwidget)
         self.textidInput.setGeometry(QtCore.QRect(340, 140, 441, 301))
         self.textidInput.setObjectName("textidInput")
@@ -68,6 +82,10 @@ class Ui_ExportWindow(object):
         ExportWindow.setWindowTitle(_translate("ExportWindow", "Export translation"))
         self.label.setText(_translate("ExportWindow", "Account:"))
         self.label_2.setText(_translate("ExportWindow", "Project:"))
+        self.langLabel.setText(_translate("ExportWindow", 
+            "Languages need to export:"))
+        self.textLabel.setText(_translate("ExportWindow", 
+            "Text Ids need to export:"))
         self.statusLabel.setText(_translate("ExportWindow", ""))
         self.exportButton.setText(_translate("ExportWindow", "Query and Export to "))
         self.exportName.setText(_translate("ExportWindow",
